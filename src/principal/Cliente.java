@@ -1,5 +1,11 @@
 package principal;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 public class Cliente {
 
     private int numCliente;
@@ -11,6 +17,8 @@ public class Cliente {
     private int gastosMedios;
     private String direccion;
     private int codigoPostal;
+
+    public  static List <Cliente> listaCliente = new ArrayList<>();
 
     public Cliente(int numCliente, String nombre, String apellido1, String apellido2, int saldo,
                    int ingresosMedios, int gastosMedios, String direccion, int codigoPostal) {
@@ -24,6 +32,106 @@ public class Cliente {
         this.direccion = direccion;
         this.codigoPostal = codigoPostal;
     }
+
+
+    public static void menu(){
+
+        Scanner opcion = new Scanner(System.in);
+        int opc;
+
+        System.out.println("Introduzca la opción que desee:");
+        System.out.println("1. Lista clientes con saldo 0");
+        System.out.println("2. Lista clientes con saldo crédito");
+        System.out.println("3. Lista cleintes con saldo débito");
+        System.out.println("4. Generar cartas a los clientes super Vips");
+        System.out.println("5. Generar cartas a los clientes Robinson");
+        System.out.println("0. Salir");
+        opc=opcion.nextInt();
+
+
+        while (opc!=0){
+
+            switch (opc){
+
+                case 1:
+                    clientesSaldo0.generarListaClientesSaldo0();
+                    System.out.println(clientesSaldo0.listaClienteSaldo0.get(1).getNombre()) ;
+                    System.out.println(clientesSaldo0.listaClienteSaldo0.size());
+                    break;
+
+
+                default:
+                    System.out.println("Opción equivocada");
+
+
+            }
+
+
+            System.out.println("Seleccione otra opción");
+             opc= opcion.nextInt();
+
+
+        }
+
+
+
+    }
+
+    public static List<Cliente> generarLista(){
+        String text = "Clientes.txt";
+        String linea;
+        Scanner sc;
+        BufferedReader buffer1;
+        String codigo="";
+        String [] parte;
+
+        try {
+
+            buffer1 = new BufferedReader(new FileReader(text));
+
+
+
+            while ( (linea=buffer1.readLine()) != null) {
+
+                sc = new Scanner(linea);
+
+                codigo += sc.nextLine();
+                parte = codigo.split(" ");
+
+                listaCliente.add(new Cliente(Integer.parseInt(parte[0]), parte[1], parte[2], parte[3],
+                        Integer.parseInt(parte[4]), Integer.parseInt(parte[5]), Integer.parseInt(parte[6]),
+                        parte[7], Integer.parseInt(parte[8])));
+
+                codigo = "";
+
+
+            }
+            buffer1.close();
+
+
+
+        }catch (Exception e){
+
+            System.out.println("Algó falló");
+
+        }
+
+        return listaCliente;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public int getNumCliente() {
         return numCliente;
