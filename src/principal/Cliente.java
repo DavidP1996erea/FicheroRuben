@@ -1,7 +1,8 @@
 package principal;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,6 +20,8 @@ public class Cliente {
     private int codigoPostal;
 
     public  static List <Cliente> listaCliente = new ArrayList<>();
+    public  static List <Cliente> listaClienteSaldo0 = new ArrayList<>();
+    public  static List <Cliente> listaClienteCredito = new ArrayList<>();
 
     public Cliente(int numCliente, String nombre, String apellido1, String apellido2, int saldo,
                    int ingresosMedios, int gastosMedios, String direccion, int codigoPostal) {
@@ -32,6 +35,9 @@ public class Cliente {
         this.direccion = direccion;
         this.codigoPostal = codigoPostal;
     }
+
+
+
 
 
     public static void menu(){
@@ -54,9 +60,14 @@ public class Cliente {
             switch (opc){
 
                 case 1:
-                    clientesSaldo0.generarListaClientesSaldo0();
-                    System.out.println(clientesSaldo0.listaClienteSaldo0.get(1).getNombre()) ;
-                    System.out.println(clientesSaldo0.listaClienteSaldo0.size());
+                    generarListaClientesSaldo0();
+                    insertarListaSaldo0();
+                    abrirFicheroCliente0();
+                    break;
+
+                case 2:
+                    generarListaClientesCredito();
+                    insertarListaCredito();
                     break;
 
 
@@ -81,7 +92,7 @@ public class Cliente {
         String text = "Clientes.txt";
         String linea;
         Scanner sc;
-        BufferedReader buffer1;
+        BufferedReader buffer1=null;
         String codigo="";
         String [] parte;
 
@@ -106,13 +117,20 @@ public class Cliente {
 
 
             }
-            buffer1.close();
 
 
 
         }catch (Exception e){
 
             System.out.println("Algó falló");
+
+        }finally {
+            try {
+                buffer1.close();
+            }catch (Exception fef){
+                System.out.println("error");
+            }
+
 
         }
 
@@ -122,16 +140,111 @@ public class Cliente {
 
 
 
+    public static List<Cliente> generarListaClientesSaldo0(){
+        int contador=0;
+
+        while (contador<listaCliente.size()){
+
+            if ((listaCliente.get(contador).getSaldo())==0) {
+
+                if (!listaClienteSaldo0.contains(listaCliente.get(contador))) {
+                    listaClienteSaldo0.add(listaCliente.get(contador));
+                }
+            }
 
 
+            contador++;
+        }
+
+        return listaClienteSaldo0;
+    }
+
+    public static void insertarListaSaldo0() {
+        BufferedWriter buffW;
+
+        try {
+
+            buffW = new BufferedWriter(new FileWriter("ClientesSaldo0.txt"));
+
+            for (int i = 0; i < listaClienteSaldo0.size(); i++) {
+
+                buffW.append(listaClienteSaldo0.get(i).toString());
+                buffW.write("\n");
 
 
+            }
+            buffW.close();
 
 
+        } catch (Exception e) {
+
+            System.out.println("Error");
+        }
+    }
 
 
+    public static void abrirFicheroCliente0() {
+        Desktop ficheroAEjecutar = Desktop.getDesktop();
+        try {
+            ficheroAEjecutar.open(new File("ClientesSaldo0.txt"));
+        } catch (IOException e) {
+
+            System.out.println("Error");
+
+        }
+    }
 
 
+    public static List<Cliente> generarListaClientesCredito(){
+        int contador=0;
+
+        while (contador<listaCliente.size()){
+
+            if ((listaCliente.get(contador).getSaldo())<0) {
+
+                if (!listaClienteCredito.contains(listaCliente.get(contador))) {
+                    listaClienteCredito.add(listaCliente.get(contador));
+                }
+            }
+
+
+            contador++;
+        }
+
+        return listaClienteCredito;
+    }
+
+
+    public static void insertarListaCredito() {
+        BufferedWriter buffW;
+
+        try {
+
+            buffW = new BufferedWriter(new FileWriter("ClientesCredito.txt"));
+
+            for (int i = 0; i < listaClienteCredito.size(); i++) {
+
+                buffW.append(listaClienteCredito.get(i).toString());
+                buffW.write("\n");
+
+
+            }
+            buffW.close();
+
+
+        } catch (Exception e) {
+
+            System.out.println("Error");
+        }
+    }
+
+    @Override
+    public String toString() {
+
+        return "Código: " + numCliente + " Nombre: " + nombre + " PrimerApellido: " + apellido1 + " SegundoApellido: " +
+            apellido2  + " Saldo: " + saldo + " IngresosMedio: " + ingresosMedios + " GastosMedios: " + gastosMedios;
+
+    }
 
     public int getNumCliente() {
         return numCliente;
